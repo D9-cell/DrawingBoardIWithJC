@@ -25,14 +25,12 @@ import com.example.drawingboardiwithjc.ui.theme.DrawingBoardIWithJCTheme
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         setContent {
             DrawingBoardIWithJCTheme {
                 DrawingViewScreen()
             }
         }
     }
-
 
     @Preview(showBackground = true)
     @Composable

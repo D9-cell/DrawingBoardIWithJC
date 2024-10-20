@@ -3,6 +3,7 @@ package com.example.drawingboardiwithjc
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Icon
@@ -14,6 +15,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 
 @Composable
@@ -73,13 +75,29 @@ fun CustomBottomBar(
                 tint = Color.Unspecified
             )
         }
+
         // Button to change the background color
         IconButton(onClick = onBackgroundColorChange, Modifier.size(30.dp)) {
             Icon(
-                painter = painterResource(R.drawable.color), // You can use a different icon
+                painter = painterResource(R.drawable.background), // You can use a different icon
                 contentDescription = "Change Background Color",
                 tint = Color.Unspecified
             )
         }
     }
+}
+
+// Preview Function
+@Preview(showBackground = true)
+@Composable
+fun CustomBottomBarPreview() {
+    CustomBottomBar(
+        onUndo = {},
+        onRedo = {},
+        onBrushSizeChange = {},
+        onClearCanvas = {},
+        onColorChange = {},
+        onBackgroundColorChange = {},
+        modifier = Modifier.fillMaxWidth()
+    )
 }
