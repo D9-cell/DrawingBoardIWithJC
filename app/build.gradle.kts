@@ -51,6 +51,12 @@ android {
 
 dependencies {
 
+    implementation (libs.material3)
+    // Add these in your dependencies block in build.gradle (app module)
+
+    implementation (libs.androidx.material) // or the latest version of Material2
+    implementation (libs.ui)
+    implementation (libs.androidx.material3.v110 )// Optional for Material3
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)

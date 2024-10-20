@@ -7,5 +7,25 @@
     <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+    <!-- CustomBottomButtonBar Color -->
     <color name="pastelPeach">#F0E68C</color>
+
+    <!-- Blackboard Colors -->
+    <color name="charcoal">#333333</color>
+    <color name="slateGray">#708090</color>
+    <color name="darkGreen">#006400</color>
+    <color name="midnightBlue">#191970</color>
+    <color name="darkOliveGreen">#556B2F</color>
+    <color name="graphite">#1C1C1C</color>
+    <color name="pineGreen">#01796F</color>
+
+    <!-- Chalk Colors -->
+    <color name="chalkWhite">#FFFFFF</color>
+    <color name="chalkPastelPink">#FFB6C1</color>
+    <color name="chalkPastelBlue">#ADD8E6</color>
+    <color name="chalkPastelGreen">#98FB98</color>
+    <color name="chalkPastelYellow">#FFFFE0</color>
+    <color name="chalkLavender">#E6E6FA</color>
+    <color name="chalkLightCoral">#F08080</color>
+    <color name="chalkPeach">#FFDAB9</color>
 </resources>
