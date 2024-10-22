@@ -6,8 +6,8 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -35,7 +35,12 @@ fun CustomBottomBar(
         horizontalArrangement = Arrangement.SpaceEvenly,
         verticalAlignment = Alignment.CenterVertically
     ) {
-        IconButton(onClick = onUndo, Modifier.size(30.dp)) {
+        // FloatingActionButton for Undo
+        FloatingActionButton(
+            onClick = onUndo,
+            modifier = Modifier.size(40.dp), // Default FAB size
+            containerColor = Color.Unspecified
+        ) {
             Icon(
                 painter = painterResource(R.drawable.undo),
                 contentDescription = "Undo",
@@ -43,7 +48,12 @@ fun CustomBottomBar(
             )
         }
 
-        IconButton(onClick = onRedo, Modifier.size(30.dp)) {
+        // FloatingActionButton for Redo
+        FloatingActionButton(
+            onClick = onRedo,
+            modifier = Modifier.size(40.dp), // Default FAB size
+            containerColor = Color.Unspecified
+        ) {
             Icon(
                 painter = painterResource(R.drawable.undo),
                 contentDescription = "Redo",
@@ -52,7 +62,12 @@ fun CustomBottomBar(
             )
         }
 
-        IconButton(onClick = onBrushSizeChange, Modifier.size(30.dp)) {
+        // FloatingActionButton for Brush Size Change
+        FloatingActionButton(
+            onClick = onBrushSizeChange,
+            modifier = Modifier.size(40.dp), // Default FAB size
+            containerColor = Color.Unspecified
+        ) {
             Icon(
                 painter = painterResource(R.drawable.brush),
                 contentDescription = "Brush Size",
@@ -60,7 +75,12 @@ fun CustomBottomBar(
             )
         }
 
-        IconButton(onClick = onClearCanvas, Modifier.size(30.dp)) {
+        // FloatingActionButton for Clear Canvas
+        FloatingActionButton(
+            onClick = onClearCanvas,
+            modifier = Modifier.size(40.dp), // Default FAB size
+            containerColor = Color.Unspecified
+        ) {
             Icon(
                 painter = painterResource(R.drawable.clear),
                 contentDescription = "Clear",
@@ -68,7 +88,12 @@ fun CustomBottomBar(
             )
         }
 
-        IconButton(onClick = onColorChange, Modifier.size(30.dp)) {
+        // FloatingActionButton for Color Change
+        FloatingActionButton(
+            onClick = onColorChange,
+            modifier = Modifier.size(40.dp), // Default FAB size
+            containerColor = Color.Unspecified
+        ) {
             Icon(
                 painter = painterResource(R.drawable.color),
                 contentDescription = "Choose Color",
@@ -76,8 +101,12 @@ fun CustomBottomBar(
             )
         }
 
-        // Button to change the background color
-        IconButton(onClick = onBackgroundColorChange, Modifier.size(30.dp)) {
+        // FloatingActionButton for Background Color Change
+        FloatingActionButton(
+            onClick = onBackgroundColorChange,
+            modifier = Modifier.size(40.dp), // Default FAB size
+            containerColor = Color.Unspecified
+        ) {
             Icon(
                 painter = painterResource(R.drawable.background), // You can use a different icon
                 contentDescription = "Change Background Color",
