@@ -131,8 +131,8 @@ fun DrawingViewScreen() {
                 Slider(
                     value = currentBrushSize,
                     onValueChange = { size -> changeBrushSize(size) },
-                    valueRange = 3f..30f,
-                    steps = 2
+                    valueRange = 2f..18f,
+                    steps = 16, // This allows the slider to jump by integer values
                 )
 
                 //For Brush Color Selection
