@@ -25,12 +25,11 @@ import androidx.core.view.WindowInsetsCompat
 
 @Composable
 fun DrawingViewScreen() {
-    var drawingView: DrawingView? = null
     var selectedColor by remember { mutableStateOf(Color.Black) }
     var currentColorIndex by remember { mutableIntStateOf(0) }
     var currentBrushSize by remember { mutableFloatStateOf(3f) }
     var backgroundColor by remember { mutableStateOf(Color.White) } // State for background color
-    var currentBackgroundColorIndex by remember { mutableIntStateOf(0) } // To track current background color index
+    var currentBackgroundColorIndex by remember { mutableIntStateOf(0) }
 
     // List of Colors from Brush Color Resources
     val colors = listOf(
@@ -43,6 +42,7 @@ fun DrawingViewScreen() {
         colorResource(id = R.color.chalkLightCoral),
         colorResource(id = R.color.chalkPeach),
     )
+
     // List of Colors from Background Color Resources
     val backgroundColors = listOf(
         colorResource(id = R.color.white),
@@ -55,6 +55,9 @@ fun DrawingViewScreen() {
         colorResource(id = R.color.pineGreen)
     )
 
+    // Create and remember the DrawingView instance
+    val drawingView = remember { mutableStateOf<DrawingView?>(null) }
+
     // Function to change brush size
     fun changeBrushSize() {
         currentBrushSize = when (currentBrushSize) {
@@ -62,22 +65,20 @@ fun DrawingViewScreen() {
             5f -> 8f
             else -> 3f
         }
-        drawingView?.setSizeForBrush(currentBrushSize)
+        drawingView.value?.setSizeForBrush(currentBrushSize)
     }
+
     // Function to change brush Color
-    fun changeBrushColor(){
-        // Cycle through colors
-        currentColorIndex = (currentColorIndex + 1) % colors.size
+    fun changeBrushColor() {
+        currentColorIndex = (currentColorIndex + 1) % colors.size // Cycle through colors
         selectedColor = colors[currentColorIndex]
-        drawingView?.setColor(String.format("#%06X", 0xFFFFFF and selectedColor.toArgb()))
+        drawingView.value?.setColor(String.format("#%06X", 0xFFFFFF and selectedColor.toArgb()))
     }
+
     // Function to change Background Color of Board
-    fun changeBackgroundColor(){
-        // Change background color to the next color in the list
-        currentBackgroundColorIndex = (currentBackgroundColorIndex + 1) % backgroundColors.size
+    fun changeBackgroundColor() {
+        currentBackgroundColorIndex = (currentBackgroundColorIndex + 1) % backgroundColors.size // Change background color to the next color in the list
         backgroundColor = backgroundColors[currentBackgroundColorIndex]
-        // Set the color again to ensure brush color remains consistent
-        drawingView?.setColor(String.format("#%06X", 0xFFFFFF and selectedColor.toArgb()))
     }
 
     Column(modifier = Modifier.fillMaxSize()) {
@@ -85,7 +86,8 @@ fun DrawingViewScreen() {
             .fillMaxWidth()
             .weight(14f)
             .border(2.dp, color = Color.DarkGray)) {
-            // Background Layer
+
+            // Background Layer (without causing a recomposition of the DrawingView)
             Box(modifier = Modifier
                 .matchParentSize()
                 .background(backgroundColor) // Use the backgroundColor state
@@ -96,7 +98,7 @@ fun DrawingViewScreen() {
                 modifier = Modifier.fillMaxSize(),
                 factory = { context ->
                     DrawingView(context, null).apply {
-                        drawingView = this
+                        drawingView.value = this
                         setColor(String.format("#%06X", 0xFFFFFF and selectedColor.toArgb())) // Set the initial color
                         ViewCompat.setOnApplyWindowInsetsListener(this) { v, insets ->
                             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
@@ -114,21 +116,15 @@ fun DrawingViewScreen() {
 
         // Bottom Bar with Brush and Color Picker
         CustomBottomBar(
-            onUndo = { drawingView?.onClickUndo() },
-            onRedo = { drawingView?.onClickRedo() },
-            onBrushSizeChange = { changeBrushSize() /* Call the changeBrushSize function*/ },
-            onClearCanvas = { drawingView?.clearCanvas() },
+            onUndo = { drawingView.value?.onClickUndo() },
+            onRedo = { drawingView.value?.onClickRedo() },
+            onBrushSizeChange = { changeBrushSize() /* Call the changeBrushSize function */ },
+            onClearCanvas = { drawingView.value?.clearCanvas() },
             onColorChange = { changeBrushColor() },
             onBackgroundColorChange = { changeBackgroundColor() },
-            modifier = Modifier.fillMaxWidth().weight(1f)
+            modifier = Modifier
+                .fillMaxWidth()
+                .weight(1f)
         )
     }
-
-}
-
-// Preview Function
-@Preview(showBackground = true)
-@Composable
-fun DrawingViewPreview() {
-    DrawingViewScreen()
 }
