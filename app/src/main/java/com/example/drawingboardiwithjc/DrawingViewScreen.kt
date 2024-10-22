@@ -88,7 +88,8 @@ fun DrawingViewScreen() {
         Box(modifier = Modifier
             .fillMaxWidth()
             .weight(14f)
-            .border(2.dp, color = Color.DarkGray)) {
+            .border(2.dp, color = Color.DarkGray)
+        ) {
 
             Box(modifier = Modifier
                 .matchParentSize()
@@ -134,6 +135,7 @@ fun DrawingViewScreen() {
                     steps = 2
                 )
 
+                //For Brush Color Selection
                 Text(text = "Select Brush Color", fontSize = 18.sp)
                 Row(horizontalArrangement = Arrangement.spacedBy(10.dp),
                     modifier = Modifier
@@ -142,7 +144,7 @@ fun DrawingViewScreen() {
                         .background(colorResource(id = R.color.lightGray))
                         .horizontalScroll(rememberScrollState())
                 ) {
-                    colors.forEachIndexed { index, color ->
+                    colors.forEachIndexed { index, _ ->
                         ColorButton(
                             buttonNumber = index,
                             isSelected = index == currentColorIndex,
@@ -155,6 +157,7 @@ fun DrawingViewScreen() {
                     }
                 }
 
+                //For Background Color Selection
                 Text(text = "Select Background Color", fontSize = 18.sp)
                 Row(
                     horizontalArrangement = Arrangement.spacedBy(10.dp),
@@ -164,7 +167,7 @@ fun DrawingViewScreen() {
                         .background(colorResource(id = R.color.lightGray))
                         .horizontalScroll(rememberScrollState())
                 ) {
-                    backgroundColors.forEachIndexed { index, color ->
+                    backgroundColors.forEachIndexed { index, _ ->
                         ColorButton(
                             buttonNumber = index,
                             isSelected = index == currentBackgroundColorIndex,
@@ -176,7 +179,6 @@ fun DrawingViewScreen() {
                         )
                     }
                 }
-
             }
         }
     }
