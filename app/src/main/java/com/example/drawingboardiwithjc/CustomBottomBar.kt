@@ -19,10 +19,7 @@ import androidx.compose.ui.unit.dp
 
 @Composable
 fun CustomBottomBar(
-    onUndo: () -> Unit,
-    onRedo: () -> Unit,
     onBrushSizeChange: () -> Unit,
-    onClearCanvas: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     Row(
@@ -43,46 +40,6 @@ fun CustomBottomBar(
             )
         }
 
-        // IconButton for Undo
-        IconButton(
-            onClick = onUndo,
-            modifier = Modifier.size(56.dp) // Set the size for the IconButton
-        ) {
-            Icon(
-                painter = painterResource(R.drawable.undo),
-                contentDescription = "Undo",
-                tint = Color.Unspecified,
-                modifier = Modifier.size(32.dp) // Increase icon size
-            )
-        }
-
-        // IconButton for Redo
-        IconButton(
-            onClick = onRedo,
-            modifier = Modifier.size(56.dp) // Set the size for the IconButton
-        ) {
-            Icon(
-                painter = painterResource(R.drawable.undo),
-                contentDescription = "Redo",
-                tint = Color.Unspecified,
-                modifier = Modifier
-                    .size(32.dp) // Increase icon size
-                    .graphicsLayer(rotationY = 180f) // Rotate for redo
-            )
-        }
-
-        // IconButton for Clear Canvas
-        IconButton(
-            onClick = onClearCanvas,
-            modifier = Modifier.size(56.dp) // Set the size for the IconButton
-        ) {
-            Icon(
-                painter = painterResource(R.drawable.clear),
-                contentDescription = "Clear",
-                tint = Color.Unspecified,
-                modifier = Modifier.size(32.dp) // Increase icon size
-            )
-        }
     }
 }
 
@@ -91,10 +48,7 @@ fun CustomBottomBar(
 @Composable
 fun CustomBottomBarPreview() {
     CustomBottomBar(
-        onUndo = {},
-        onRedo = {},
         onBrushSizeChange = {},
-        onClearCanvas = {},
         modifier = Modifier.fillMaxWidth()
     )
 }

@@ -10,9 +10,12 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Slider
 import androidx.compose.material3.Text
@@ -26,8 +29,10 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -111,10 +116,7 @@ fun DrawingViewScreen() {
         }
 
         CustomBottomBar(
-            onUndo = { drawingView.value?.onClickUndo() },
-            onRedo = { drawingView.value?.onClickRedo() },
             onBrushSizeChange = { showBrushBottomSheet = true },
-            onClearCanvas = { drawingView.value?.clearCanvas() },
             modifier = Modifier
                 .fillMaxWidth()
                 .weight(1f)
@@ -122,7 +124,7 @@ fun DrawingViewScreen() {
     }
 
     // Brush Bottom Sheet
-    if (showBrushBottomSheet) {
+    if (showBrushBottomSheet)   {
         ModalBottomSheet(
             onDismissRequest = { showBrushBottomSheet = false }
         ) {
@@ -179,6 +181,82 @@ fun DrawingViewScreen() {
                         )
                     }
                 }
+
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp), // Optional padding for extra spacing
+                    horizontalArrangement = Arrangement.SpaceEvenly // Space buttons evenly
+                ) {
+                    // IconButton for Undo
+                    IconButton(
+                        onClick = { drawingView.value?.onClickUndo() },
+                        modifier = Modifier.size(56.dp) // Set the size for the IconButton
+                    ) {
+                        Icon(
+                            painter = painterResource(R.drawable.undo),
+                            contentDescription = "Undo",
+                            tint = Color.Unspecified,
+                            modifier = Modifier.size(32.dp) // Increase icon size
+                        )
+                    }
+
+                    // IconButton for Redo
+                    IconButton(
+                        onClick = { drawingView.value?.onClickRedo() },
+                        modifier = Modifier.size(56.dp) // Set the size for the IconButton
+                    ) {
+                        Icon(
+                            painter = painterResource(R.drawable.undo),
+                            contentDescription = "Redo",
+                            tint = Color.Unspecified,
+                            modifier = Modifier
+                                .size(32.dp) // Increase icon size
+                                .graphicsLayer(rotationY = 180f) // Rotate for redo
+                        )
+                    }
+
+                    // IconButton for Clear Canvas
+                    IconButton(
+                        onClick = { drawingView.value?.clearCanvas() },
+                        modifier = Modifier.size(56.dp) // Set the size for the IconButton
+                    ) {
+                        Icon(
+                            painter = painterResource(R.drawable.clear),
+                            contentDescription = "Clear",
+                            tint = Color.Unspecified,
+                            modifier = Modifier.size(32.dp) // Increase icon size
+                        )
+                    }
+
+                    // IconButton for Brush Size
+                    IconButton(
+                        onClick = { }, // Function for brush size change
+                        modifier = Modifier.size(56.dp) // Set the size for the IconButton
+                    ) {
+                        Icon(
+                            painter = painterResource(R.drawable.share), // Replace with the correct drawable for Brush Size
+                            contentDescription = "Brush Size",
+                            tint = Color.Unspecified,
+                            modifier = Modifier.size(32.dp) // Increase icon size
+                        )
+                    }
+
+                    // IconButton for Change Background
+                    IconButton(
+                        onClick = {  }, // Function for background color change
+                        modifier = Modifier.size(56.dp) // Set the size for the IconButton
+                    ) {
+                        Icon(
+                            painter = painterResource(R.drawable.ai), // Replace with the correct drawable for Background Change
+                            contentDescription = "Change Background",
+                            tint = Color.Unspecified,
+                            modifier = Modifier.size(32.dp) // Increase icon size
+                        )
+                    }
+                }
+
+
             }
         }
     }
