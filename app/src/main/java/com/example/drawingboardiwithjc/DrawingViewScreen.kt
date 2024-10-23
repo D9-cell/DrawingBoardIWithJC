@@ -107,12 +107,15 @@ fun DrawingViewScreen() {
             modifier = Modifier
                 .align(Alignment.BottomEnd) // Align to the bottom-right
                 .padding(16.dp)
-                .size(54.dp)// Add padding from the edge
+                .size(54.dp)
+                .clip(RoundedCornerShape(26.dp))
+                .background(colorResource(id = R.color.purple_200))// Add padding from the edge
         ) {
             Icon(
                 painter = painterResource(R.drawable.brush), // Use brush icon
                 contentDescription = "Brush Size",
-                tint = Color.Unspecified
+                tint = Color.Unspecified,
+                modifier = Modifier.fillMaxSize()
             )
         }
 
@@ -122,16 +125,14 @@ fun DrawingViewScreen() {
                 onDismissRequest = { showBrushBottomSheet = false }
             ) {
                 Column(modifier = Modifier.padding(16.dp)) {
-                    Text(text = "Select Brush Size", fontSize = 18.sp)
+                    Text(text = "Select Brush Size", fontSize = 18.sp, color = Color.DarkGray, modifier = Modifier.padding(start = 9.dp,top = 14.dp))
                     Slider(
                         value = currentBrushSize,
                         onValueChange = { size -> changeBrushSize(size) },
                         valueRange = 2f..18f,
                         steps = 16, // This allows the slider to jump by integer values
                     )
-
-                    // Brush Color Selection
-                    Text(text = "Select Brush Color", fontSize = 18.sp)
+                    Spacer(modifier = Modifier.height(9.dp))
                     Row(
                         horizontalArrangement = Arrangement.spacedBy(10.dp),
                         modifier = Modifier
@@ -140,21 +141,26 @@ fun DrawingViewScreen() {
                             .background(colorResource(id = R.color.lightGray))
                             .horizontalScroll(rememberScrollState())
                     ) {
-                        colors.forEachIndexed { index, _ ->
-                            ColorButton(
-                                buttonNumber = index,
-                                isSelected = index == currentColorIndex,
-                                colors = colors,
-                                onColorSelected = { buttonIndex ->
-                                    currentColorIndex = buttonIndex
-                                    changeBrushColor(colors[buttonIndex])
-                                }
-                            )
+                        Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+                            // Brush Color Selection
+                            Text(text = "Select Brush Color", fontSize = 18.sp, color = Color.DarkGray, modifier = Modifier.padding(start = 9.dp,top = 14.dp))
+                            colors.forEachIndexed { index, _ ->
+                                ColorButton(
+                                    buttonNumber = index,
+                                    isSelected = index == currentColorIndex,
+                                    colors = colors,
+                                    onColorSelected = { buttonIndex ->
+                                        currentColorIndex = buttonIndex
+                                        changeBrushColor(colors[buttonIndex])
+                                    }
+                                )
+                            }
                         }
+
                     }
 
-                    // Background Color Selection
-                    Text(text = "Select Background Color", fontSize = 18.sp)
+                    Spacer(modifier = Modifier.height(9.dp))
+
                     Row(
                         horizontalArrangement = Arrangement.spacedBy(10.dp),
                         modifier = Modifier
@@ -163,19 +169,27 @@ fun DrawingViewScreen() {
                             .background(colorResource(id = R.color.lightGray))
                             .horizontalScroll(rememberScrollState())
                     ) {
-                        backgroundColors.forEachIndexed { index, _ ->
-                            ColorButton(
-                                buttonNumber = index,
-                                isSelected = index == currentBackgroundColorIndex,
-                                colors = backgroundColors,
-                                onColorSelected = { buttonIndex ->
-                                    currentBackgroundColorIndex = buttonIndex
-                                    changeBackgroundColor(backgroundColors[buttonIndex])
-                                }
+                        Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+                            // Background Color Selection
+                            Text(
+                                text = "Select Background Color",
+                                fontSize = 18.sp,
+                                color = Color.DarkGray,
+                                modifier = Modifier.padding(start = 9.dp, top = 14.dp)
                             )
+                            backgroundColors.forEachIndexed { index, _ ->
+                                ColorButton(
+                                    buttonNumber = index,
+                                    isSelected = index == currentBackgroundColorIndex,
+                                    colors = backgroundColors,
+                                    onColorSelected = { buttonIndex ->
+                                        currentBackgroundColorIndex = buttonIndex
+                                        changeBackgroundColor(backgroundColors[buttonIndex])
+                                    }
+                                )
+                            }
                         }
                     }
-
                     // Bottom bar with buttons like Undo, Redo, Clear, Brush Size, Change Background
                     Row(
                         modifier = Modifier
@@ -196,7 +210,9 @@ fun DrawingViewScreen() {
                                 painter = painterResource(R.drawable.undo),
                                 contentDescription = "Redo",
                                 tint = Color.Unspecified,
-                                modifier = Modifier.size(32.dp).graphicsLayer(rotationY = 180f)
+                                modifier = Modifier
+                                    .size(32.dp)
+                                    .graphicsLayer(rotationY = 180f)
                             )
                         }
                         IconButton(onClick = { drawingView.value?.clearCanvas() }) {
