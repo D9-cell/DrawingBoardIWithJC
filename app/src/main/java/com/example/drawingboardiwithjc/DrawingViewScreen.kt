@@ -207,6 +207,31 @@ fun DrawingViewScreen() {
                                 modifier = Modifier.size(32.dp)
                             )
                         }
+                        //IconButton for Share the Image
+                        IconButton(
+                            onClick = { }, // Function for Share the image
+                            modifier = Modifier.size(56.dp) // Set the size for the IconButton
+                        ) {
+                            Icon(
+                                painter = painterResource(R.drawable.share),
+                                contentDescription = "Brush Size",
+                                tint = Color.Unspecified,
+                                modifier = Modifier.size(32.dp) // Increase icon size
+                            )
+                        }
+
+                        // IconButton for Using AI
+                        IconButton(
+                            onClick = {  }, // Function for Calling AI Model
+                            modifier = Modifier.size(56.dp) // Set the size for the IconButton
+                        ) {
+                            Icon(
+                                painter = painterResource(R.drawable.ai), // Replace with the correct drawable for Background Change
+                                contentDescription = "Change Background",
+                                tint = Color.Unspecified,
+                                modifier = Modifier.size(32.dp) // Increase icon size
+                            )
+                        }
                     }
                 }
             }
