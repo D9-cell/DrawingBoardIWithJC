@@ -6,10 +6,18 @@ import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.Path
+import android.os.Environment
 import android.util.AttributeSet
 import android.util.TypedValue
 import android.view.MotionEvent
 import android.view.View
+import android.widget.Toast
+import java.io.File
+import java.io.FileOutputStream
+import java.io.OutputStream
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 class DrawingView(context: Context, attrs: AttributeSet?) : View(context, attrs) {
     private var mDrawPath: CustomPath? = null
@@ -116,17 +124,14 @@ class DrawingView(context: Context, attrs: AttributeSet?) : View(context, attrs)
         mDrawPaint!!.strokeWidth = mBrushSize
     }
 
-//    fun setColor(newColor: String) {
-//        color = Color.parseColor(newColor)
-//        mDrawPaint!!.color = color
-//    }
-
     // Set color method
     fun setColor(currentColor: String) {
         color = Color.parseColor(currentColor)
         mDrawPaint!!.color = color // Update your paint object if you have one
         invalidate() // Redraw the view
+
     }
+
 
     internal inner class CustomPath(var color: Int, var brushThickness: Float) : Path() {
 

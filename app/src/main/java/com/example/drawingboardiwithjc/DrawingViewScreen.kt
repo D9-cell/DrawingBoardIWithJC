@@ -2,26 +2,24 @@ package com.example.drawingboardiwithjc
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.horizontalScroll
+import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.toArgb
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
+import kotlin.math.roundToInt
 
-@OptIn(ExperimentalMaterial3Api::class)
+
 @Composable
 fun DrawingViewScreen() {
     var selectedColor by remember { mutableStateOf(Color.Black) }
@@ -29,7 +27,7 @@ fun DrawingViewScreen() {
     var currentBrushSize by remember { mutableFloatStateOf(3f) }
     var backgroundColor by remember { mutableStateOf(Color.White) }
     var currentBackgroundColorIndex by remember { mutableIntStateOf(0) }
-    var showBrushBottomSheet by remember { mutableStateOf(false) } // State to toggle bottom sheet
+    var showBrushBottomSheet by remember { mutableStateOf(false) }
 
     // Brush and background colors list
     val colors = listOf(
@@ -55,19 +53,17 @@ fun DrawingViewScreen() {
 
     val drawingView = remember { mutableStateOf<DrawingView?>(null) }
 
-    // Function to change brush size
+    // Functions to change brush size, color, and background color
     fun changeBrushSize(size: Float) {
         currentBrushSize = size
         drawingView.value?.setSizeForBrush(currentBrushSize)
     }
 
-    // Function to change brush Color
     fun changeBrushColor(color: Color) {
         selectedColor = color
         drawingView.value?.setColor(String.format("#%06X", 0xFFFFFF and selectedColor.toArgb()))
     }
 
-    // Function to change Background Color
     fun changeBackgroundColor(color: Color) {
         backgroundColor = color
     }
@@ -100,163 +96,52 @@ fun DrawingViewScreen() {
                 )
             }
         }
+        Box(modifier = Modifier.fillMaxSize()) {
+            var offsetX by remember { mutableFloatStateOf(0f) }
+            var offsetY by remember { mutableFloatStateOf(0f) }
 
-        // FloatingActionButton for Brush Size at the bottom-right corner
-        FloatingActionButton(
-            onClick = { showBrushBottomSheet = true }, // Open brush size changer on click
-            modifier = Modifier
-                .align(Alignment.BottomEnd) // Align to the bottom-right
-                .padding(16.dp)
-                .size(54.dp)
-                .clip(RoundedCornerShape(26.dp))
-                .background(colorResource(id = R.color.purple_200))// Add padding from the edge
-        ) {
-            Icon(
-                painter = painterResource(R.drawable.brush), // Use brush icon
-                contentDescription = "Brush Size",
-                tint = Color.Unspecified,
-                modifier = Modifier.fillMaxSize()
-            )
+            FloatingActionButton(
+                onClick = { showBrushBottomSheet = true }, // Open brush size changer on click
+                modifier = Modifier
+                    .offset { IntOffset(offsetX.roundToInt(), offsetY.roundToInt()) }
+                    .padding(16.dp)
+                    .size(54.dp)
+                    .clip(RoundedCornerShape(26.dp))
+                    .background(colorResource(id = R.color.purple_200))
+                    .pointerInput(Unit) {
+                        detectDragGestures { change, dragAmount ->
+                            change.consume()
+                            offsetX += dragAmount.x
+                            offsetY += dragAmount.y
+                        }
+                    }
+            ) {
+                Icon(
+                    painter = painterResource(R.drawable.brush), // Use brush icon
+                    contentDescription = "Brush Size",
+                    tint = Color.Unspecified,
+                    modifier = Modifier.fillMaxSize()
+                )
+            }
         }
 
         // Brush Bottom Sheet
         if (showBrushBottomSheet) {
-            ModalBottomSheet(
-                onDismissRequest = { showBrushBottomSheet = false }
-            ) {
-                Column(modifier = Modifier.padding(16.dp)) {
-                    Text(text = "Select Brush Size", fontSize = 18.sp, color = Color.DarkGray, modifier = Modifier.padding(start = 9.dp,top = 14.dp))
-                    Slider(
-                        value = currentBrushSize,
-                        onValueChange = { size -> changeBrushSize(size) },
-                        valueRange = 2f..18f,
-                        steps = 16, // This allows the slider to jump by integer values
-                    )
-                    Spacer(modifier = Modifier.height(9.dp))
-                    Row(
-                        horizontalArrangement = Arrangement.spacedBy(10.dp),
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .clip(RoundedCornerShape(16.dp)) // Apply rounded corners
-                            .background(colorResource(id = R.color.lightGray))
-                            .horizontalScroll(rememberScrollState())
-                    ) {
-                        Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
-                            // Brush Color Selection
-                            Text(text = "Select Brush Color", fontSize = 18.sp, color = Color.DarkGray, modifier = Modifier.padding(start = 9.dp,top = 14.dp))
-                            colors.forEachIndexed { index, _ ->
-                                ColorButton(
-                                    buttonNumber = index,
-                                    isSelected = index == currentColorIndex,
-                                    colors = colors,
-                                    onColorSelected = { buttonIndex ->
-                                        currentColorIndex = buttonIndex
-                                        changeBrushColor(colors[buttonIndex])
-                                    }
-                                )
-                            }
-                        }
-
-                    }
-
-                    Spacer(modifier = Modifier.height(9.dp))
-
-                    Row(
-                        horizontalArrangement = Arrangement.spacedBy(10.dp),
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .clip(RoundedCornerShape(16.dp)) // Apply rounded corners
-                            .background(colorResource(id = R.color.lightGray))
-                            .horizontalScroll(rememberScrollState())
-                    ) {
-                        Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
-                            // Background Color Selection
-                            Text(
-                                text = "Select Background Color",
-                                fontSize = 18.sp,
-                                color = Color.DarkGray,
-                                modifier = Modifier.padding(start = 9.dp, top = 14.dp)
-                            )
-                            backgroundColors.forEachIndexed { index, _ ->
-                                ColorButton(
-                                    buttonNumber = index,
-                                    isSelected = index == currentBackgroundColorIndex,
-                                    colors = backgroundColors,
-                                    onColorSelected = { buttonIndex ->
-                                        currentBackgroundColorIndex = buttonIndex
-                                        changeBackgroundColor(backgroundColors[buttonIndex])
-                                    }
-                                )
-                            }
-                        }
-                    }
-                    // Bottom bar with buttons like Undo, Redo, Clear, Brush Size, Change Background
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(16.dp),
-                        horizontalArrangement = Arrangement.SpaceEvenly
-                    ) {
-                        IconButton(onClick = { drawingView.value?.onClickUndo() }) {
-                            Icon(
-                                painter = painterResource(R.drawable.undo),
-                                contentDescription = "Undo",
-                                tint = Color.Unspecified,
-                                modifier = Modifier.size(32.dp)
-                            )
-                        }
-                        IconButton(onClick = { drawingView.value?.onClickRedo() }) {
-                            Icon(
-                                painter = painterResource(R.drawable.undo),
-                                contentDescription = "Redo",
-                                tint = Color.Unspecified,
-                                modifier = Modifier
-                                    .size(32.dp)
-                                    .graphicsLayer(rotationY = 180f)
-                            )
-                        }
-                        IconButton(onClick = { drawingView.value?.clearCanvas() }) {
-                            Icon(
-                                painter = painterResource(R.drawable.clear),
-                                contentDescription = "Clear",
-                                tint = Color.Unspecified,
-                                modifier = Modifier.size(32.dp)
-                            )
-                        }
-                        //IconButton for Share the Image
-                        IconButton(
-                            onClick = { }, // Function for Share the image
-                            modifier = Modifier.size(56.dp) // Set the size for the IconButton
-                        ) {
-                            Icon(
-                                painter = painterResource(R.drawable.share),
-                                contentDescription = "Brush Size",
-                                tint = Color.Unspecified,
-                                modifier = Modifier.size(32.dp) // Increase icon size
-                            )
-                        }
-
-                        // IconButton for Using AI
-                        IconButton(
-                            onClick = {  }, // Function for Calling AI Model
-                            modifier = Modifier.size(56.dp) // Set the size for the IconButton
-                        ) {
-                            Icon(
-                                painter = painterResource(R.drawable.ai), // Replace with the correct drawable for Background Change
-                                contentDescription = "Change Background",
-                                tint = Color.Unspecified,
-                                modifier = Modifier.size(32.dp) // Increase icon size
-                            )
-                        }
-                    }
-                }
-            }
+            BrushBottomSheet(
+                onDismiss = { showBrushBottomSheet = false },
+                drawingView = drawingView.value,
+                colors = colors,
+                backgroundColors = backgroundColors,
+                currentBrushSize = currentBrushSize,
+                currentColorIndex = currentColorIndex,
+                currentBackgroundColorIndex = currentBackgroundColorIndex,
+                changeBrushSize = ::changeBrushSize,
+                changeBrushColor = ::changeBrushColor,
+                changeBackgroundColor = ::changeBackgroundColor,
+                updateCurrentColorIndex = { newIndex -> currentColorIndex = newIndex }, // New function
+                updateCurrentBackgroundColorIndex = { newIndex -> currentBackgroundColorIndex = newIndex } // New function
+            )
         }
     }
 }
 
-@Preview(showBackground = true, showSystemUi = true)
-@Composable
-fun DrawingViewPreview() {
-    DrawingViewScreen()
-}
