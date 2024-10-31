@@ -6,18 +6,11 @@ import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.Path
-import android.os.Environment
 import android.util.AttributeSet
 import android.util.TypedValue
 import android.view.MotionEvent
 import android.view.View
-import android.widget.Toast
-import java.io.File
-import java.io.FileOutputStream
-import java.io.OutputStream
-import java.text.SimpleDateFormat
-import java.util.Date
-import java.util.Locale
+import androidx.compose.ui.graphics.toArgb
 
 class DrawingView(context: Context, attrs: AttributeSet?) : View(context, attrs) {
     private var mDrawPath: CustomPath? = null
@@ -130,6 +123,22 @@ class DrawingView(context: Context, attrs: AttributeSet?) : View(context, attrs)
         mDrawPaint!!.color = color // Update your paint object if you have one
         invalidate() // Redraw the view
 
+    }
+
+    fun getBitmap(currentBackgroundColor: androidx.compose.ui.graphics.Color): Bitmap {
+        // Create a bitmap with the same size as the drawing view
+        val bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
+
+        // Create a canvas to draw onto the bitmap
+        val canvas = Canvas(bitmap)
+
+        // Draw the background color
+        canvas.drawColor(currentBackgroundColor.toArgb()) // Use the current background color
+
+        // Draw the current drawing onto the bitmap
+        draw(canvas)
+
+        return bitmap
     }
 
 

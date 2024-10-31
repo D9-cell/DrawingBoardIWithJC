@@ -12,6 +12,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.IntOffset
@@ -120,6 +121,7 @@ fun DrawingViewScreen() {
         // Brush Bottom Sheet
         if (showBrushBottomSheet) {
             BrushBottomSheet(
+                context = LocalContext.current,
                 onDismiss = { showBrushBottomSheet = false },
                 drawingView = drawingView.value,
                 colors = colors,

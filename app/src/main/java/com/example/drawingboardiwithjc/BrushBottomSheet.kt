@@ -1,5 +1,7 @@
 package com.example.drawingboardiwithjc
 
+
+import android.content.Context
 import androidx.compose.foundation.background
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
@@ -27,10 +29,21 @@ import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import android.content.Intent
+import android.graphics.Bitmap
+import android.net.Uri
+import android.os.Environment
+import android.widget.Toast
+import androidx.core.content.FileProvider
+import java.io.File
+import java.io.FileOutputStream
+
+
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun BrushBottomSheet(
+    context: Context,
     onDismiss: () -> Unit,
     drawingView: DrawingView?,
     colors: List<Color>,
@@ -152,9 +165,20 @@ fun BrushBottomSheet(
                         modifier = Modifier.size(32.dp)
                     )
                 }
-                // IconButton for Share the Image
                 IconButton(
-                    onClick = { /* Function for Share the image */ },
+                    onClick = {
+                        drawingView?.let { view ->
+                            val bitmap = view.getBitmap(backgroundColors[currentBackgroundColorIndex]) // Pass the current background color
+                            if (bitmap != null) {
+                                val uri = saveBitmap(context, bitmap) // Save the bitmap and get the URI
+                                if (uri != null) {
+                                    shareBitmap(context, uri) // Share the saved bitmap
+                                }
+                            } else {
+                                Toast.makeText(context, "Error capturing drawing", Toast.LENGTH_SHORT).show()
+                            }
+                        }
+                    },
                     modifier = Modifier.size(56.dp) // Set the size for the IconButton
                 ) {
                     Icon(
@@ -168,3 +192,54 @@ fun BrushBottomSheet(
         }
     }
 }
+
+private fun saveBitmap(context: Context, bitmap: Bitmap): Uri? {
+    val file = File(context.getExternalFilesDir(Environment.DIRECTORY_PICTURES), "Drawing_${System.currentTimeMillis()}.png")
+    return try {
+        FileOutputStream(file).use { out ->
+            bitmap.compress(Bitmap.CompressFormat.PNG, 100, out)
+            out.flush()
+        }
+        // Return the Uri for the saved file
+        FileProvider.getUriForFile(context, "${context.packageName}.fileprovider", file)
+    } catch (e: Exception) {
+        Toast.makeText(context, "Error saving drawing: ${e.message}", Toast.LENGTH_SHORT).show()
+        null
+    }
+}
+
+private fun shareBitmap(context: Context, uri: Uri) {
+    val shareIntent = Intent().apply {
+        action = Intent.ACTION_SEND
+        putExtra(Intent.EXTRA_STREAM, uri)
+        type = "image/png"
+        addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+    }
+    context.startActivity(Intent.createChooser(shareIntent, "Share Drawing"))
+}
+
+/*
+private fun saveBitmapAndShare(context: Context, bitmap: Bitmap) {
+    val file = File(context.getExternalFilesDir(Environment.DIRECTORY_PICTURES), "Drawing_${System.currentTimeMillis()}.png")
+
+    try {
+        FileOutputStream(file).use { out ->
+            bitmap.compress(Bitmap.CompressFormat.PNG, 100, out)
+            out.flush()
+        }
+
+        // Share the image
+        val uri: Uri = FileProvider.getUriForFile(context, "${context.packageName}.fileprovider", file)
+        val shareIntent = Intent().apply {
+            action = Intent.ACTION_SEND
+            putExtra(Intent.EXTRA_STREAM, uri)
+            type = "image/png"
+            addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+        }
+        context.startActivity(Intent.createChooser(shareIntent, "Share Drawing"))
+    } catch (e: Exception) {
+        Toast.makeText(context, "Error sharing drawing: ${e.message}", Toast.LENGTH_SHORT).show()
+    }
+}*/
+
+
