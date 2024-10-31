@@ -31,24 +31,16 @@ fun DrawingViewScreen() {
 
     // Brush and background colors list
     val colors = listOf(
-        colorResource(id = R.color.chalkWhite),
-        colorResource(id = R.color.chalkPastelPink),
-        colorResource(id = R.color.chalkPastelBlue),
-        colorResource(id = R.color.chalkPastelGreen),
-        colorResource(id = R.color.chalkPastelYellow),
-        colorResource(id = R.color.chalkLavender),
-        colorResource(id = R.color.chalkLightCoral),
-        colorResource(id = R.color.chalkPeach),
+        colorResource(id = R.color.chalkWhite),colorResource(id = R.color.chalkPastelPink),
+        colorResource(id = R.color.chalkPastelBlue),colorResource(id = R.color.chalkPastelGreen),
+        colorResource(id = R.color.chalkPastelYellow),colorResource(id = R.color.chalkLavender),
+        colorResource(id = R.color.chalkLightCoral),colorResource(id = R.color.chalkPeach),
     )
     val backgroundColors = listOf(
-        colorResource(id = R.color.white),
-        colorResource(id = R.color.charcoal),
-        colorResource(id = R.color.slateGray),
-        colorResource(id = R.color.darkGreen),
-        colorResource(id = R.color.midnightBlue),
-        colorResource(id = R.color.darkOliveGreen),
-        colorResource(id = R.color.graphite),
-        colorResource(id = R.color.pineGreen)
+        colorResource(id = R.color.white),colorResource(id = R.color.charcoal),
+        colorResource(id = R.color.slateGray),colorResource(id = R.color.darkGreen),
+        colorResource(id = R.color.midnightBlue),colorResource(id = R.color.darkOliveGreen),
+        colorResource(id = R.color.graphite),colorResource(id = R.color.pineGreen)
     )
 
     val drawingView = remember { mutableStateOf<DrawingView?>(null) }
