@@ -61,7 +61,6 @@ fun BrushBottomSheet(
             )
             Spacer(modifier = Modifier.height(9.dp))
 
-
             Row(
                 horizontalArrangement = Arrangement.spacedBy(10.dp),
                 modifier = Modifier
