@@ -169,13 +169,10 @@ fun BrushBottomSheet(
                     onClick = {
                         drawingView?.let { view ->
                             val bitmap = view.getBitmap(backgroundColors[currentBackgroundColorIndex]) // Pass the current background color
-                            if (bitmap != null) {
-                                val uri = saveBitmap(context, bitmap) // Save the bitmap and get the URI
-                                if (uri != null) {
-                                    shareBitmap(context, uri) // Share the saved bitmap
-                                }
-                            } else {
-                                Toast.makeText(context, "Error capturing drawing", Toast.LENGTH_SHORT).show()
+                            val uri =
+                                drawingView.saveBitmap(context, bitmap) // Save the bitmap and get the URI
+                            if (uri != null) {
+                                shareBitmap(context, uri) // Share the saved bitmap
                             }
                         }
                     },
@@ -193,20 +190,7 @@ fun BrushBottomSheet(
     }
 }
 
-private fun saveBitmap(context: Context, bitmap: Bitmap): Uri? {
-    val file = File(context.getExternalFilesDir(Environment.DIRECTORY_PICTURES), "Drawing_${System.currentTimeMillis()}.png")
-    return try {
-        FileOutputStream(file).use { out ->
-            bitmap.compress(Bitmap.CompressFormat.PNG, 100, out)
-            out.flush()
-        }
-        // Return the Uri for the saved file
-        FileProvider.getUriForFile(context, "${context.packageName}.fileprovider", file)
-    } catch (e: Exception) {
-        Toast.makeText(context, "Error saving drawing: ${e.message}", Toast.LENGTH_SHORT).show()
-        null
-    }
-}
+
 
 private fun shareBitmap(context: Context, uri: Uri) {
     val shareIntent = Intent().apply {

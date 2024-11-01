@@ -6,13 +6,19 @@ import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.Path
+import android.net.Uri
+import android.os.Environment
 import android.util.AttributeSet
 import android.util.Log
 import android.util.TypedValue
 import android.view.GestureDetector
 import android.view.MotionEvent
 import android.view.View
+import android.widget.Toast
 import androidx.compose.ui.graphics.toArgb
+import androidx.core.content.FileProvider
+import java.io.File
+import java.io.FileOutputStream
 
 class DrawingView(context: Context, attrs: AttributeSet?) : View(context, attrs) {
     private var mDrawPath: CustomPath? = null
@@ -148,6 +154,21 @@ class DrawingView(context: Context, attrs: AttributeSet?) : View(context, attrs)
         draw(canvas)
 
         return bitmap
+    }
+
+    fun saveBitmap(context: Context, bitmap: Bitmap): Uri? {
+        val file = File(context.getExternalFilesDir(Environment.DIRECTORY_PICTURES), "Drawing_${System.currentTimeMillis()}.png")
+        return try {
+            FileOutputStream(file).use { out ->
+                bitmap.compress(Bitmap.CompressFormat.PNG, 100, out)
+                out.flush()
+            }
+            // Return the Uri for the saved file
+            FileProvider.getUriForFile(context, "${context.packageName}.fileprovider", file)
+        } catch (e: Exception) {
+            Toast.makeText(context, "Error saving drawing: ${e.message}", Toast.LENGTH_SHORT).show()
+            null
+        }
     }
 
     internal inner class CustomPath(var color: Int, var brushThickness: Float) : Path() {
