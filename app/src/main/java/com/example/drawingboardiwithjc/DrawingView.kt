@@ -7,7 +7,9 @@ import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.Path
 import android.util.AttributeSet
+import android.util.Log
 import android.util.TypedValue
+import android.view.GestureDetector
 import android.view.MotionEvent
 import android.view.View
 import androidx.compose.ui.graphics.toArgb
@@ -24,9 +26,7 @@ class DrawingView(context: Context, attrs: AttributeSet?) : View(context, attrs)
     // Paths to store drawn lines
     private val mPaths = ArrayList<CustomPath>()
     private val mUndoPaths = ArrayList<CustomPath>()
-
-    // **Redo paths to manage undone paths**
-    private val mRedoPaths = ArrayList<CustomPath>() // **New Redo paths list**
+    private val mRedoPaths = ArrayList<CustomPath>() // New Redo paths list
 
     init {
         setUpDrawing()
@@ -36,13 +36,12 @@ class DrawingView(context: Context, attrs: AttributeSet?) : View(context, attrs)
     fun onClickUndo() {
         if (mPaths.isNotEmpty()) {
             mUndoPaths.add(mPaths.removeAt(mPaths.size - 1))
-            // **Also clear redo stack when a new undo is performed**
-            mRedoPaths.clear()  // **Clear redo paths on undo**
+            mRedoPaths.clear() // Clear redo paths on undo
             invalidate()
         }
     }
 
-    // **Redo functionality**
+    // Redo functionality
     fun onClickRedo() {
         if (mUndoPaths.isNotEmpty()) {
             mPaths.add(mUndoPaths.removeAt(mUndoPaths.size - 1))
@@ -54,7 +53,7 @@ class DrawingView(context: Context, attrs: AttributeSet?) : View(context, attrs)
     fun clearCanvas() {
         mPaths.clear()
         mUndoPaths.clear()
-        mRedoPaths.clear()  // **Clear redo paths on canvas clear**
+        mRedoPaths.clear() // Clear redo paths on canvas clear
         invalidate()
     }
 
@@ -90,23 +89,34 @@ class DrawingView(context: Context, attrs: AttributeSet?) : View(context, attrs)
     }
 
     override fun onTouchEvent(event: MotionEvent?): Boolean {
-        val touchX = event?.x
-        val touchY = event?.y
-        when (event?.action) {
+
+        // Handle drawing on touch events
+        val touchX = event?.x ?: return false
+        val touchY = event.y
+        when (event.action) {
             MotionEvent.ACTION_DOWN -> {
                 mDrawPath!!.color = color
                 mDrawPath!!.brushThickness = mBrushSize
                 mDrawPath!!.reset()
-                mDrawPath!!.moveTo(touchX!!, touchY!!)
+                mDrawPath!!.moveTo(touchX, touchY)
+
+                // Add the starting point with status 0
+                mDrawPath!!.coordinates.add(Triple(touchX, touchY, 0))
             }
             MotionEvent.ACTION_MOVE -> {
-                mDrawPath!!.lineTo(touchX!!, touchY!!)
+                mDrawPath!!.lineTo(touchX, touchY)
+                // Add intermediate points with status 1
+                mDrawPath!!.coordinates.add(Triple(touchX, touchY, 1))
             }
             MotionEvent.ACTION_UP -> {
+                // Add the last point with status 0
+                mDrawPath!!.coordinates.add(Triple(touchX, touchY, 0))
                 mPaths.add(mDrawPath!!)
+
+                // Print the paths with coordinates and statuses
+                Log.d("DrawingView", "Current paths with coordinates and statuses: $mPaths")
                 mDrawPath = CustomPath(color, mBrushSize)
             }
-            else -> return false
         }
         invalidate()
         return true
@@ -122,7 +132,6 @@ class DrawingView(context: Context, attrs: AttributeSet?) : View(context, attrs)
         color = Color.parseColor(currentColor)
         mDrawPaint!!.color = color // Update your paint object if you have one
         invalidate() // Redraw the view
-
     }
 
     fun getBitmap(currentBackgroundColor: androidx.compose.ui.graphics.Color): Bitmap {
@@ -141,8 +150,11 @@ class DrawingView(context: Context, attrs: AttributeSet?) : View(context, attrs)
         return bitmap
     }
 
-
     internal inner class CustomPath(var color: Int, var brushThickness: Float) : Path() {
+        val coordinates = mutableListOf<Triple<Float, Float, Int>>()
 
+        override fun toString(): String {
+            return "CustomPath(color=$color, brushThickness=$brushThickness, coordinates=$coordinates)"
+        }
     }
 }
