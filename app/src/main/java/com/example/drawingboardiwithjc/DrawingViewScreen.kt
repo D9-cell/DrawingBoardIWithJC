@@ -29,6 +29,8 @@ fun DrawingViewScreen() {
     var backgroundColor by remember { mutableStateOf(Color.White) }
     var currentBackgroundColorIndex by remember { mutableIntStateOf(0) }
     var showBrushBottomSheet by remember { mutableStateOf(false) }
+    val context = LocalContext.current
+
 
     // Brush and background colors list
     val colors = listOf(
@@ -121,7 +123,7 @@ fun DrawingViewScreen() {
         // Brush Bottom Sheet
         if (showBrushBottomSheet) {
             BrushBottomSheet(
-                context = LocalContext.current,
+                context = context,
                 onDismiss = { showBrushBottomSheet = false },
                 drawingView = drawingView.value,
                 colors = colors,
