@@ -30,13 +30,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import android.content.Intent
-import android.graphics.Bitmap
 import android.net.Uri
-import android.os.Environment
-import android.widget.Toast
-import androidx.core.content.FileProvider
-import java.io.File
-import java.io.FileOutputStream
 
 
 
