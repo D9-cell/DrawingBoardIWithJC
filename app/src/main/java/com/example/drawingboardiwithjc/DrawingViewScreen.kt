@@ -20,7 +20,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import kotlin.math.roundToInt
 
-
 @Composable
 fun DrawingViewScreen() {
     var selectedColor by remember { mutableStateOf(Color.Black) }
@@ -31,19 +30,18 @@ fun DrawingViewScreen() {
     var showBrushBottomSheet by remember { mutableStateOf(false) }
     val context = LocalContext.current
 
-
     // Brush and background colors list
     val colors = listOf(
-        colorResource(id = R.color.chalkWhite),colorResource(id = R.color.chalkPastelPink),
-        colorResource(id = R.color.chalkPastelBlue),colorResource(id = R.color.chalkPastelGreen),
-        colorResource(id = R.color.chalkPastelYellow),colorResource(id = R.color.chalkLavender),
-        colorResource(id = R.color.chalkLightCoral),colorResource(id = R.color.chalkPeach),
+        colorResource(id = R.color.chalkWhite), colorResource(id = R.color.chalkPastelPink),
+        colorResource(id = R.color.chalkPastelBlue), colorResource(id = R.color.chalkPastelGreen),
+        colorResource(id = R.color.chalkPastelYellow), colorResource(id = R.color.chalkLavender),
+        colorResource(id = R.color.chalkLightCoral), colorResource(id = R.color.chalkPeach)
     )
     val backgroundColors = listOf(
-        colorResource(id = R.color.white),colorResource(id = R.color.charcoal),
-        colorResource(id = R.color.slateGray),colorResource(id = R.color.darkGreen),
-        colorResource(id = R.color.midnightBlue),colorResource(id = R.color.darkOliveGreen),
-        colorResource(id = R.color.graphite),colorResource(id = R.color.pineGreen)
+        colorResource(id = R.color.white), colorResource(id = R.color.charcoal),
+        colorResource(id = R.color.slateGray), colorResource(id = R.color.darkGreen),
+        colorResource(id = R.color.midnightBlue), colorResource(id = R.color.darkOliveGreen),
+        colorResource(id = R.color.graphite), colorResource(id = R.color.pineGreen)
     )
 
     val drawingView = remember { mutableStateOf<DrawingView?>(null) }
@@ -61,6 +59,7 @@ fun DrawingViewScreen() {
 
     fun changeBackgroundColor(color: Color) {
         backgroundColor = color
+        drawingView.value?.setBackgroundColor(backgroundColor.toArgb()) // Update DrawingView background
     }
 
     Box(modifier = Modifier.fillMaxSize()) {
@@ -71,32 +70,30 @@ fun DrawingViewScreen() {
                     .weight(14f)
                     .border(2.dp, color = Color.DarkGray)
             ) {
-                Box(
-                    modifier = Modifier
-                        .matchParentSize()
-                        .background(backgroundColor) // Use the backgroundColor state
-                )
-
                 AndroidView(
                     modifier = Modifier.fillMaxSize(),
                     factory = { context ->
                         DrawingView(context, null).apply {
                             drawingView.value = this
                             setColor(String.format("#%06X", 0xFFFFFF and selectedColor.toArgb())) // Set initial color
+                            setBackgroundColor(backgroundColor.toArgb()) // Set initial background color
                         }
                     },
                     update = { view ->
                         view.setColor(String.format("#%06X", 0xFFFFFF and selectedColor.toArgb()))
+                        view.setBackgroundColor(backgroundColor.toArgb())
                     }
                 )
             }
         }
+
+        // Draggable Floating Action Button
         Box(modifier = Modifier.fillMaxSize()) {
             var offsetX by remember { mutableFloatStateOf(0f) }
             var offsetY by remember { mutableFloatStateOf(0f) }
 
             FloatingActionButton(
-                onClick = { showBrushBottomSheet = true }, // Open brush size changer on click
+                onClick = { showBrushBottomSheet = true },
                 modifier = Modifier
                     .offset { IntOffset(offsetX.roundToInt(), offsetY.roundToInt()) }
                     .padding(16.dp)
@@ -112,7 +109,7 @@ fun DrawingViewScreen() {
                     }
             ) {
                 Icon(
-                    painter = painterResource(R.drawable.brush), // Use brush icon
+                    painter = painterResource(R.drawable.brush),
                     contentDescription = "Brush Size",
                     tint = Color.Unspecified,
                     modifier = Modifier.fillMaxSize()
@@ -134,10 +131,9 @@ fun DrawingViewScreen() {
                 changeBrushSize = ::changeBrushSize,
                 changeBrushColor = ::changeBrushColor,
                 changeBackgroundColor = ::changeBackgroundColor,
-                updateCurrentColorIndex = { newIndex -> currentColorIndex = newIndex }, // New function
-                updateCurrentBackgroundColorIndex = { newIndex -> currentBackgroundColorIndex = newIndex } // New function
+                updateCurrentColorIndex = { newIndex -> currentColorIndex = newIndex },
+                updateCurrentBackgroundColorIndex = { newIndex -> currentBackgroundColorIndex = newIndex }
             )
         }
     }
 }
-
