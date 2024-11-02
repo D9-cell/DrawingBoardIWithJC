@@ -181,7 +181,7 @@ fun BrushBottomSheet(
                 }
                 IconButton(onClick = { }) {
                     Icon(
-                        painter = painterResource(R.drawable.background),
+                        painter = painterResource(R.drawable.ai),
                         contentDescription = "Eraser",
                         tint = Color.Unspecified,
                         modifier = Modifier.size(32.dp)
