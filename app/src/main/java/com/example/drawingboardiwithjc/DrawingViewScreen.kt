@@ -87,7 +87,7 @@ fun DrawingViewScreen() {
             }
         }
 
-        // Draggable Floating Action Button
+        // Draggable Floating Action Button with Boundaries
         Box(modifier = Modifier.fillMaxSize()) {
             var offsetX by remember { mutableFloatStateOf(0f) }
             var offsetY by remember { mutableFloatStateOf(0f) }
@@ -103,8 +103,8 @@ fun DrawingViewScreen() {
                     .pointerInput(Unit) {
                         detectDragGestures { change, dragAmount ->
                             change.consume()
-                            offsetX += dragAmount.x
-                            offsetY += dragAmount.y
+                            offsetX = (offsetX + dragAmount.x).coerceIn(-500f, 500f) // Set horizontal boundaries
+                            offsetY = (offsetY + dragAmount.y).coerceIn(-800f, 800f) // Set vertical boundaries
                         }
                     }
             ) {
@@ -116,6 +116,7 @@ fun DrawingViewScreen() {
                 )
             }
         }
+
 
         // Brush Bottom Sheet
         if (showBrushBottomSheet) {
