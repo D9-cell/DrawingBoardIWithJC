@@ -5,13 +5,11 @@ import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
-import android.graphics.Path
 import android.net.Uri
 import android.os.Environment
 import android.util.AttributeSet
 import android.util.Log
 import android.util.TypedValue
-import android.view.GestureDetector
 import android.view.MotionEvent
 import android.view.View
 import android.widget.Toast
@@ -34,15 +32,25 @@ class DrawingView(context: Context, attrs: AttributeSet?) : View(context, attrs)
     private val mUndoPaths = ArrayList<CustomPath>()
     private val mRedoPaths = ArrayList<CustomPath>() // New Redo paths list
 
+    // Variable to store all coordinates from mPaths
+    private val allCoordinates = mutableListOf<List<Triple<Int, Int, Int>>>()
+
     init {
         setUpDrawing()
+    }
+
+    // Function to update the coordinates list
+    private fun updateAllCoordinates() {
+        allCoordinates.clear()
+        allCoordinates.addAll(mPaths.map { it.coordinates })
     }
 
     // Undo functionality
     fun onClickUndo() {
         if (mPaths.isNotEmpty()) {
             mUndoPaths.add(mPaths.removeAt(mPaths.size - 1))
-            mRedoPaths.clear() // Clear redo paths on undo
+            mRedoPaths.clear()
+            updateAllCoordinates() // Update after undo
             invalidate()
         }
     }
@@ -51,6 +59,7 @@ class DrawingView(context: Context, attrs: AttributeSet?) : View(context, attrs)
     fun onClickRedo() {
         if (mUndoPaths.isNotEmpty()) {
             mPaths.add(mUndoPaths.removeAt(mUndoPaths.size - 1))
+            updateAllCoordinates() // Update after redo
             invalidate()
         }
     }
@@ -59,7 +68,8 @@ class DrawingView(context: Context, attrs: AttributeSet?) : View(context, attrs)
     fun clearCanvas() {
         mPaths.clear()
         mUndoPaths.clear()
-        mRedoPaths.clear() // Clear redo paths on canvas clear
+        mRedoPaths.clear()
+        updateAllCoordinates() // Update after clear
         invalidate()
     }
 
@@ -95,38 +105,34 @@ class DrawingView(context: Context, attrs: AttributeSet?) : View(context, attrs)
     }
 
     override fun onTouchEvent(event: MotionEvent?): Boolean {
+        val touchX = event?.x?.toInt() ?: return false
+        val touchY = event.y.toInt()
 
-        // Handle drawing on touch events
-        val touchX = event?.x ?: return false
-        val touchY = event.y
         when (event.action) {
             MotionEvent.ACTION_DOWN -> {
                 mDrawPath!!.color = color
                 mDrawPath!!.brushThickness = mBrushSize
                 mDrawPath!!.reset()
-                mDrawPath!!.moveTo(touchX, touchY)
+                mDrawPath!!.moveTo(touchX.toFloat(), touchY.toFloat())
 
-                // Add the starting point with status 0
-                mDrawPath!!.coordinates.add(Triple(touchX, touchY, 0))
+                mDrawPath!!.coordinates.add(Triple(touchX, touchY, 1))
             }
             MotionEvent.ACTION_MOVE -> {
-                mDrawPath!!.lineTo(touchX, touchY)
-                // Add intermediate points with status 1
+                mDrawPath!!.lineTo(touchX.toFloat(), touchY.toFloat())
                 mDrawPath!!.coordinates.add(Triple(touchX, touchY, 1))
             }
             MotionEvent.ACTION_UP -> {
-                // Add the last point with status 0
                 mDrawPath!!.coordinates.add(Triple(touchX, touchY, 0))
                 mPaths.add(mDrawPath!!)
-
-                // Print the paths with coordinates and statuses
-                Log.d("DrawingView", "Current paths with coordinates and statuses: $mPaths")
+                updateAllCoordinates() // Update after new path
+                Log.d("DrawingView", "Updated allCoordinates: $allCoordinates")
                 mDrawPath = CustomPath(color, mBrushSize)
             }
         }
         invalidate()
         return true
     }
+
 
     fun setSizeForBrush(newSize: Float) {
         mBrushSize = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, newSize, resources.displayMetrics)
@@ -171,11 +177,4 @@ class DrawingView(context: Context, attrs: AttributeSet?) : View(context, attrs)
         }
     }
 
-    internal inner class CustomPath(var color: Int, var brushThickness: Float) : Path() {
-        val coordinates = mutableListOf<Triple<Float, Float, Int>>()
-
-        override fun toString(): String {
-            return "CustomPath(color=$color, brushThickness=$brushThickness, coordinates=$coordinates)"
-        }
-    }
 }

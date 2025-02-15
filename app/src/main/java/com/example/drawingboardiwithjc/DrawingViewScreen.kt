@@ -116,8 +116,6 @@ fun DrawingViewScreen() {
                 )
             }
         }
-
-
         // Brush Bottom Sheet
         if (showBrushBottomSheet) {
             BrushBottomSheet(
