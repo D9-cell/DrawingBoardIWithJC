@@ -15,6 +15,7 @@ import android.view.View
 import android.widget.Toast
 import androidx.compose.ui.graphics.toArgb
 import androidx.core.content.FileProvider
+import getProcessedFeatures
 import java.io.File
 import java.io.FileOutputStream
 
@@ -126,6 +127,10 @@ class DrawingView(context: Context, attrs: AttributeSet?) : View(context, attrs)
                 mPaths.add(mDrawPath!!)
                 updateAllCoordinates() // Update after new path
                 Log.d("DrawingView", "Updated allCoordinates: $allCoordinates")
+
+                val features = getProcessedFeatures(this)
+                Log.d("ProcessedFeatures", "Extracted Features: $features")
+
                 mDrawPath = CustomPath(color, mBrushSize)
             }
         }
@@ -144,6 +149,10 @@ class DrawingView(context: Context, attrs: AttributeSet?) : View(context, attrs)
         color = Color.parseColor(currentColor)
         mDrawPaint!!.color = color // Update your paint object if you have one
         invalidate() // Redraw the view
+    }
+
+    fun getAllCoordinates(): List<List<Triple<Int, Int, Int>>> {
+        return allCoordinates
     }
 
     fun getBitmap(currentBackgroundColor: androidx.compose.ui.graphics.Color): Bitmap {
