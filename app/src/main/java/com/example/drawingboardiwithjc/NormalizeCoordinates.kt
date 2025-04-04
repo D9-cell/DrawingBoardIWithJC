@@ -102,6 +102,6 @@ fun getProcessedFeatures(drawingView: DrawingView): List<Double> {
     println("Length of the Input List : ${cleanCoordinates.size}" )
     val listOutput : List<Double> = processSingleList(cleanCoordinates)
     println("Actual Calculated Features : $listOutput")
-    println("Length of the List : ${listOutput.size}" )
+    println("Length of the List : ${listOutput.size} = 18 + (2 * ${cleanCoordinates.size})" )
     return listOutput
 }
