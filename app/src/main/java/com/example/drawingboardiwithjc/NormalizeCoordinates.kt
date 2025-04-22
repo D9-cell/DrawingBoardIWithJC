@@ -57,13 +57,13 @@ fun processSingleList(points: List<Pair<Int, Int>>): List<Double> {
     )
 }
 
-// Function to normalize list to exactly 120 points using linear interpolation
-fun normalizeTo120Points(points: List<Pair<Int, Int>>): List<Pair<Int, Int>> {
+// Function to normalize list to exactly 60 points using linear interpolation
+fun normalizeTo60Points(points: List<Pair<Int, Int>>): List<Pair<Int, Int>> {
     val n = points.size
     val normalizedList = mutableListOf<Pair<Int, Int>>()
 
-    for (i in 0 until 120) {
-        val index = i * (n - 1).toDouble() / 119 // Compute proportional index
+    for (i in 0 until 60) {
+        val index = i * (n - 1).toDouble() / 59
         val lowerIndex = index.toInt()
         val upperIndex = (lowerIndex + 1).coerceAtMost(n - 1)
         val fraction = index - lowerIndex
@@ -77,15 +77,16 @@ fun normalizeTo120Points(points: List<Pair<Int, Int>>): List<Pair<Int, Int>> {
     return normalizedList
 }
 
+
 // Function to process and ensure list has exactly 120 points
 fun processList(nestedList: List<List<Triple<Int, Int, Int>>>): List<Pair<Int, Int>> {
     val flatList = nestedList.flatten()
     val pairList = convertToPairList(flatList)
 
     return when {
-        pairList.size == 120 -> pairList
-        pairList.size < 120 -> pairList /*throw IllegalArgumentException("Error: Points are less than 120, please redraw.")*/
-        else -> normalizeTo120Points(pairList) // Normalize if greater than 120
+        pairList.size == 60 -> pairList
+        pairList.size < 60 -> pairList // Optional: throw error if too few
+        else -> normalizeTo60Points(pairList)
     }
 }
 
