@@ -127,7 +127,7 @@ class DrawingView(context: Context, attrs: AttributeSet?) : View(context, attrs)
                 mPaths.add(mDrawPath!!)
                 updateAllCoordinates() // Update after new path
                 Log.d("DrawingView", "Updated allCoordinates: $allCoordinates")
-
+/*
                 val features = getProcessedFeatures(this) // Ensure this returns a FloatArray
                 Log.d("ProcessedFeatures", "Extracted Features: $features")
                 Log.d("ProcessedFeatures","Extracted Features List Size: ${features.size}")
@@ -165,6 +165,7 @@ class DrawingView(context: Context, attrs: AttributeSet?) : View(context, attrs)
                     Log.e("TFLiteClassifier", "Prediction failed: ${e.message}")
                     Toast.makeText(context, "Draw a complete character and try again", Toast.LENGTH_SHORT).show()
                 }
+                */
 
                 mDrawPath = CustomPath(color, mBrushSize)
             }
