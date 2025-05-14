@@ -46,24 +46,7 @@ class DrawingView(context: Context, attrs: AttributeSet?) : View(context, attrs)
         allCoordinates.addAll(mPaths.map { it.coordinates })
     }
 
-    // Undo functionality
-    fun onClickUndo() {
-        if (mPaths.isNotEmpty()) {
-            mUndoPaths.add(mPaths.removeAt(mPaths.size - 1))
-            mRedoPaths.clear()
-            updateAllCoordinates() // Update after undo
-            invalidate()
-        }
-    }
 
-    // Redo functionality
-    fun onClickRedo() {
-        if (mUndoPaths.isNotEmpty()) {
-            mPaths.add(mUndoPaths.removeAt(mUndoPaths.size - 1))
-            updateAllCoordinates() // Update after redo
-            invalidate()
-        }
-    }
 
     // Clear the canvas
     fun clearCanvas() {
@@ -102,6 +85,29 @@ class DrawingView(context: Context, attrs: AttributeSet?) : View(context, attrs)
             mDrawPaint!!.strokeWidth = mDrawPath!!.brushThickness
             mDrawPaint!!.color = mDrawPaint!!.color
             canvas.drawPath(mDrawPath!!, mDrawPaint!!)
+        }
+    }
+
+    // Redo functionality
+    fun onClickRedo() {
+        if (mUndoPaths.isNotEmpty()) {
+            mPaths.add(mUndoPaths.removeAt(mUndoPaths.size - 1))
+            updateAllCoordinates() // Update after redo
+            Log.d("DrawingView","After Redo : $allCoordinates")
+            Log.d("DrawingView","After Redo : ${allCoordinates.size}")
+            invalidate()
+        }
+    }
+
+    // Undo functionality
+    fun onClickUndo() {
+        if (mPaths.isNotEmpty()) {
+            mUndoPaths.add(mPaths.removeAt(mPaths.size - 1))
+            mRedoPaths.clear()
+            updateAllCoordinates() // Update after undo
+            Log.d("DrawingView","After Undo : $allCoordinates")
+            Log.d("DrawingView","After Undo : ${allCoordinates.size}")
+            invalidate()
         }
     }
 

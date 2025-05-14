@@ -183,7 +183,7 @@ fun BrushBottomSheet(
                 }
                 IconButton(onClick = {
                     val features =
-                        drawingView?.let { getProcessedFeatures(it) } // Ensure this returns a FloatArray
+                        drawingView?.let { getProcessedFeatures(it) }
                     Log.d("ProcessedFeatures", "Extracted Features: $features")
                     if (features != null) {
                         Log.d("ProcessedFeatures","Extracted Features List Size: ${features.size}")
